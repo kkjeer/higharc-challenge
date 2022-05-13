@@ -11,13 +11,15 @@
     "@types/node": "^12.20.12",
     "@types/react": "^17.0.5",
     "@types/react-dom": "^17.0.3",
-    "d3": "^6.7.0",
+    "@types/react-redux": "^7.1.24",
+    "eslint-config-react-app": "^6.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-motion": "^0.5.2",
-    "react-move": "^6.4.0",
+    "react-redux": "^8.0.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
+    "redux": "^4.2.0",
+    "redux-thunk": "^2.4.1",
     "typescript": "^4.2.4",
     "web-vitals": "^1.1.2"
   },
@@ -27,7 +29,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+    "redeploy": "npm run predeploy && npm run deploy"
   },
   "eslintConfig": {
     "extends": [
