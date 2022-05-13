@@ -1,0 +1,35 @@
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* span { */
+/* font-family: "Avenir LT Pro 35 Light Oblique" !important; */
+/* font-family: "EB Garamond" !important; */
+/* font-family: "AvenirNextLTPro-Heavy", Arial, sans-serif !important; */
+/* text-shadow: 1px 1px 3.2px rgb(0 0 0 / 50%) !important; */
+/* } */
+
+span,
+link,
+.linkCurrent {
+  font-family: "Avenir LT Pro", "Papyrus" !important;
+}
+
+.link,
+.linkCurrent {
+  text-decoration: none !important;
+}
+
+.link,
+.link:active,
+a,
+a:active,
+a:hover {
+  text-decoration: none !important;
+}
+
+.textShadow {
+  text-shadow: 1px 1px 3.2px rgb(0 0 0 / 50%);
+}

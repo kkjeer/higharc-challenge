@@ -1,0 +1,10 @@
+.link,
+.text {
+  color: white !important;
+}
+
+.linkCurrent,
+.link:hover,
+.linkCurrent:hover {
+  color: #40e0d0 !important;
+}
