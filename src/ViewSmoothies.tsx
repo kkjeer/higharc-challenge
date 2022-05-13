@@ -28,6 +28,7 @@ export class ViewSmoothies extends React.Component<IViewSmoothiesProps, IViewSmo
     const { smoothies } = this.props;
     const { searchName } = this.state;
 
+    // If the search text is nonempty, only show smoothies whose names contain (case insensitive) the search text.
     let namesToShow = Object.keys(smoothies);
     if (searchName) {
       namesToShow = namesToShow.filter(name => name.toLowerCase().indexOf(searchName.toLowerCase()) != -1);
@@ -56,14 +57,23 @@ export class ViewSmoothies extends React.Component<IViewSmoothiesProps, IViewSmo
     );
   }
 
+  /**
+   * Event handler for changing the smoothie name search text.
+   */
   _searchChange = (ev: any, val?: string) => {
     this.setState({ searchName: val || "" });
   }
 
+  /**
+   * Event handler for pressing Enter on the search box to search smoothies by name.
+   */
   _searchForSmoothie = (val?: string) => {
     this.setState({ searchName: val || "" });
   }
 
+  /**
+   * Event handler for clearing the smoothie name search text.
+   */
   _clearSearch = (ev: any) => {
     this.setState({ searchName: "" });
   }
@@ -73,6 +83,7 @@ export class ViewSmoothies extends React.Component<IViewSmoothiesProps, IViewSmo
    */
   _smoothie = (name: string) => {
     const smoothie = this.props.smoothies[name];
+
     return (
       <Stack
         className="card"
@@ -93,6 +104,13 @@ export class ViewSmoothies extends React.Component<IViewSmoothiesProps, IViewSmo
           </Stack>
           <Stack tokens={{childrenGap: 10}} styles={{root: {paddingLeft: 5}}}>
             {smoothie.ingredients.map(ingredient => this._ingredient(ingredient))}
+          </Stack>
+          <Stack
+            horizontal
+            wrap
+            tokens={{childrenGap: 5}}
+            styles={{root: { maxWidth: 250 }}}>
+            {smoothie.tags.map(tag => <Text key={tag} variant="small">#{tag}</Text>)}
           </Stack>
       </Stack>
     );

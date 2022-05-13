@@ -10,6 +10,8 @@ interface IAddSmoothieProps {
 interface IAddSmoothieState {
   name: string;
   ingredients: IIngredient[];
+  tags: string[];
+  currTag: string;
 }
 
 const EMPTY_INGREDIENT = {
@@ -27,12 +29,14 @@ export class AddSmoothie extends React.Component<IAddSmoothieProps, IAddSmoothie
 
     this.state = {
       name: "",
-      ingredients: [EMPTY_INGREDIENT]
+      ingredients: [EMPTY_INGREDIENT],
+      tags: [],
+      currTag: ""
     };
   }
 
   render() {
-    const { name, ingredients } = this.state;
+    const { name, ingredients, tags, currTag } = this.state;
 
     const ingredientError = !this._checkIngredients();
 
@@ -82,6 +86,21 @@ export class AddSmoothie extends React.Component<IAddSmoothieProps, IAddSmoothie
         </Stack>
         {ingredients.map((ingredient: IIngredient, index: number) => this._ingredient(ingredient, index))}
         <DefaultButton text="Add ingredient" onClick={this._addIngredient} />
+        <TextField
+          placeholder="Add tags (optional)"
+          underlined
+          value={currTag}
+          errorMessage={this._duplicateTag() ? "Tag already exists." : ""}
+          onChange={this._changeCurrTag}
+          onKeyDown={this._addTag}
+        />
+        <Stack
+          horizontal
+          wrap
+          tokens={{childrenGap: 10}}
+          styles={{root: { maxWidth: 550 }}}>
+          {tags.map((tag, index) => this._tag(tag, index))}
+        </Stack>
       </Stack>
     );
   }
@@ -98,19 +117,22 @@ export class AddSmoothie extends React.Component<IAddSmoothieProps, IAddSmoothie
    */
   _addSmoothie = (ev: any) => {
     const { onAddSmoothie } = this.props;
-    const { name, ingredients } = this.state;
+    const { name, ingredients, tags } = this.state;
 
     const smoothie = {
       ingredients: ingredients.filter(ingredient => ingredient.name != "").map(ingredient => ({
         ...ingredient,
         unit: ingredient.unit || UNITS[0]
-      }))
+      })),
+      tags
     };
 
     onAddSmoothie(name, smoothie);
     this.setState({
       name: "",
-      ingredients: [EMPTY_INGREDIENT]
+      ingredients: [EMPTY_INGREDIENT],
+      tags: [],
+      currTag: ""
     });
   }
 
@@ -209,6 +231,66 @@ export class AddSmoothie extends React.Component<IAddSmoothieProps, IAddSmoothie
   }
 
   /**
+   * Renders the UI for one pending tag.
+   * Includes the ability to delete the pending tag.
+   */
+  _tag = (tag: string, index: number) => {
+    const borderRadius = 15;
+
+    return (
+      <Stack
+        key={tag}
+        horizontal
+        verticalAlign="center"
+        tokens={{childrenGap: 5}}
+        styles={{root: {
+          borderRadius,
+          backgroundColor: "#cccccc",
+          paddingRight: 10
+        }}}
+      >
+        <IconButton
+          iconProps={{iconName: "StatusCircleErrorX"}}
+          styles={{root: { borderRadius }}}
+          onClick={this._deleteTag(index)}
+        />
+        <Text>{tag}</Text>
+      </Stack>
+    );
+  }
+
+  /**
+   * Event handler for changing the current tag to be added to the set of pending tags.
+   */
+  _changeCurrTag = (ev: any, val?: string) => {
+    this.setState({ currTag: val || "" });
+  }
+
+  /**
+   * Event handler for adding a tag to the set of pending tags.
+   */
+  _addTag = (ev: any) => {
+    if (ev.key != "Enter" || this._duplicateTag()) {
+      return;
+    }
+
+    const tags = [...this.state.tags, this.state.currTag];
+    this.setState({ tags, currTag: "" });
+  }
+
+  /**
+   * Returns an event handler for removing the tag at the given index
+   * from the set of pending tags.
+   */
+  _deleteTag = (index: number) => {
+    return (ev: any) => {
+      const tags = [...this.state.tags];
+      tags.splice(index, 1);
+      this.setState({ tags });
+    };
+  }
+
+  /**
    * Returns true if and only if there is already a smoothie with the same
    * (case-insensitive) name as the name of the pending smoothie.
    */
@@ -230,7 +312,7 @@ export class AddSmoothie extends React.Component<IAddSmoothieProps, IAddSmoothie
   }
 
   /**
-   * Returns true if an only if all pending ingredients:
+   * Returns true if and only if all pending ingredients:
    * 1. Have nonempty names, and:
    * 2. Have positive numerical quantities
    */
@@ -247,5 +329,19 @@ export class AddSmoothie extends React.Component<IAddSmoothieProps, IAddSmoothie
       }
     }
     return true;
+  }
+
+  /**
+   * Returns true if and only if the current tag the user has typed in
+   * already exists (case insensitive) in the set of pending tags.
+   */
+  _duplicateTag = () => {
+    const { currTag, tags } = this.state;
+    for (const i in tags) {
+      if (tags[i].toLowerCase() == currTag.toLowerCase()) {
+        return true;
+      }
+    }
+    return false;
   }
 }

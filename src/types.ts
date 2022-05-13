@@ -2,6 +2,7 @@ export type Smoothies = { [name: string]: ISmoothie };
 
 export interface ISmoothie {
   ingredients: IIngredient[];
+  tags: string[];
 }
 
 export interface IIngredient {
