@@ -50,6 +50,7 @@ export class AddSmoothie extends React.Component<IAddSmoothieProps, IAddSmoothie
           <TextField
             label="Smoothie name"
             value={name}
+            required
             onChange={this._changeSmoothieName}
             errorMessage={this._isNameConflict() ? "A smoothie with this name already exists." : ""}
           />
@@ -110,7 +111,7 @@ export class AddSmoothie extends React.Component<IAddSmoothieProps, IAddSmoothie
     this.setState({
       name: "",
       ingredients: [EMPTY_INGREDIENT]
-    })
+    });
   }
 
   /**
@@ -124,11 +125,13 @@ export class AddSmoothie extends React.Component<IAddSmoothieProps, IAddSmoothie
         <TextField
           label="Ingredient name"
           value={ingredient.name}
+          required
           onChange={this._changeIngredientName(index)}
         />
         <TextField
           label="Quantity"
           value={ingredient.quantity}
+          required
           onChange={this._changeIngredientQuantity(index)}
           errorMessage={quantityErrorMsg}
         />
