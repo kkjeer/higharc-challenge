@@ -34,6 +34,8 @@ export class AddSmoothie extends React.Component<IAddSmoothieProps, IAddSmoothie
   render() {
     const { name, ingredients } = this.state;
 
+    const ingredientError = !this._checkIngredients();
+
     return (
       <Stack
         className="card"
@@ -54,8 +56,28 @@ export class AddSmoothie extends React.Component<IAddSmoothieProps, IAddSmoothie
           <PrimaryButton
             text="Add smoothie"
             onClick={this._addSmoothie}
-            disabled={this._isNameConflict() || !name}
+            disabled={this._isNameConflict() || !name || ingredients.length < 1 || ingredientError}
           />
+          <Stack tokens={{childrenGap: 5}} styles={{root: {maxWidth: 250}}}>
+            {
+              !name &&
+              <Text className="errorText">
+                Smoothie must have a nonempty name.
+              </Text>
+            }
+            {
+              ingredients.length < 1 &&
+              <Text className="errorText">
+                Smoothie must have at least one ingredient.
+              </Text>
+            }
+            {
+              ingredientError &&
+              <Text className="errorText">
+                All ingredients must have a nonempty name and a positive numerical quantity.
+              </Text>
+            }
+          </Stack>
         </Stack>
         {ingredients.map((ingredient: IIngredient, index: number) => this._ingredient(ingredient, index))}
         <DefaultButton text="Add ingredient" onClick={this._addIngredient} />
@@ -184,8 +206,8 @@ export class AddSmoothie extends React.Component<IAddSmoothieProps, IAddSmoothie
   }
 
   /**
-   * Returns true if and only if there is already a smoothie with the same (case-insensitive)
-   * name as the name of the pending smoothie.
+   * Returns true if and only if there is already a smoothie with the same
+   * (case-insensitive) name as the name of the pending smoothie.
    */
   _isNameConflict = () => {
     const { smoothies } = this.props;
@@ -202,5 +224,25 @@ export class AddSmoothie extends React.Component<IAddSmoothieProps, IAddSmoothie
     }
 
     return false;
+  }
+
+  /**
+   * Returns true if an only if all pending ingredients:
+   * 1. Have nonempty names, and:
+   * 2. Have positive numerical quantities
+   */
+  _checkIngredients = () => {
+    const { ingredients } = this.state;
+    for (const i in ingredients) {
+      const { name, quantity } = ingredients[i];
+      if (!name) {
+        return false;
+      }
+      const quant = Number(quantity);
+      if (isNaN(quant) || quant <= 0) {
+        return false;
+      }
+    }
+    return true;
   }
 }

@@ -19,12 +19,10 @@ export class App extends React.Component<{}, IAppState> {
   constructor(props: {}) {
     super(props);
 
+    // Populate the initialize set of smoothies using the contents of local storage.
     const currSmoothies = window.localStorage.getItem(STORAGE_KEY) || "{}";
-    const smoothies = JSON.parse(currSmoothies);
-    console.log(STORAGE_KEY, smoothies);
-
     this.state = {
-      smoothies
+      smoothies: JSON.parse(currSmoothies)
     };
   }
 
@@ -39,8 +37,10 @@ export class App extends React.Component<{}, IAppState> {
     );
   }
 
+  /**
+   * Adds the given smoothie to local storage and updates the app state.
+   */
   _addSmoothie = (name: string, smoothie: ISmoothie) => {
-    console.log("adding smoothie", name, smoothie);
     const smoothies = {
       ...this.state.smoothies,
       [name]: smoothie
@@ -49,8 +49,10 @@ export class App extends React.Component<{}, IAppState> {
     this.setState({ smoothies });
   }
 
+  /**
+   * Deletes the smoothie with the given name from local storage and updates the app state.
+   */
   _deleteSmoothie = (name: string) => {
-    console.log("deleting smoothie", name);
     const smoothies = {
       ...this.state.smoothies
     };
@@ -59,6 +61,9 @@ export class App extends React.Component<{}, IAppState> {
     this.setState({ smoothies })
   }
 
+  /**
+   * Updates local storage to reflect the given set of smoothies.
+   */
   _updateStorage = (smoothies: Smoothies) => {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(smoothies));
   }

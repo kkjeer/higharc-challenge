@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Stack, Text, IconButton } from "@fluentui/react";
+import { Stack, Text, IconButton, SearchBox } from "@fluentui/react";
 import { Smoothies, IIngredient } from "./types";
 
 interface IViewSmoothiesProps {
@@ -7,7 +7,9 @@ interface IViewSmoothiesProps {
   onDeleteSmoothie: (name: string) => void;
 }
 
-interface IViewSmoothiesState { }
+interface IViewSmoothiesState {
+  searchName: string;
+}
 
 /**
  * Renders a set of smoothies in a grid view.
@@ -16,19 +18,54 @@ interface IViewSmoothiesState { }
 export class ViewSmoothies extends React.Component<IViewSmoothiesProps, IViewSmoothiesState> {
   constructor(props: IViewSmoothiesProps) {
     super(props);
+
+    this.state = {
+      searchName: ""
+    };
   }
 
   render() {
     const { smoothies } = this.props;
+    const { searchName } = this.state;
+
+    let namesToShow = Object.keys(smoothies);
+    if (searchName) {
+      namesToShow = namesToShow.filter(name => name.toLowerCase().indexOf(searchName.toLowerCase()) != -1);
+    }
+    
     return (
-      <Stack
-        horizontal
-        wrap
-        tokens={{childrenGap: 20}}
-        horizontalAlign="start">
-        {Object.keys(smoothies).map(name => this._smoothie(name))}
+      <Stack tokens={{childrenGap: 20}} horizontalAlign="start">
+        <SearchBox
+          underlined
+          placeholder="Search for a smoothie by name"
+          onChange={this._searchChange}
+          onSearch={this._searchForSmoothie}
+          onClear={this._clearSearch}
+          styles={{root: {
+            minWidth: 250
+          }}}
+        />
+        <Stack
+          horizontal
+          wrap
+          tokens={{childrenGap: 20}}
+          horizontalAlign="start">
+            {namesToShow.map(name => this._smoothie(name))}
+        </Stack>
       </Stack>
     );
+  }
+
+  _searchChange = (ev: any, val?: string) => {
+    this.setState({ searchName: val || "" });
+  }
+
+  _searchForSmoothie = (val?: string) => {
+    this.setState({ searchName: val || "" });
+  }
+
+  _clearSearch = (ev: any) => {
+    this.setState({ searchName: "" });
   }
 
   /**
