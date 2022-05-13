@@ -21,7 +21,7 @@ const EMPTY_INGREDIENT = {
 };
 
 /**
- * Renders UI that allows the user to add one new smoothie at a time.
+ * Renders UI that allows the user to add or edit one new smoothie at a time.
  */
 export class AddSmoothie extends React.Component<IAddSmoothieProps, IAddSmoothieState> {
   constructor(props: IAddSmoothieProps) {
