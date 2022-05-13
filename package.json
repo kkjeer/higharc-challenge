@@ -1,6 +1,6 @@
 {
   "homepage": "https://kkjeer.github.io/higharc-challenge",
-  "name": "portfolio",
+  "name": "higharc-challenge",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
